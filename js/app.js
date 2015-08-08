@@ -45,6 +45,7 @@ $(document).ready(function(){
 			index = index + 1
 		$('.skateparks').append('<li><a class="skatepark-link" href=' + baseURL + 'api/skateparks/' + index +'>' +index + ":" + park.name+'</a></li>');
 		savePage();
+		//skatepark id sub index
 		})
 	})
 	request.fail("nope")
@@ -113,7 +114,6 @@ $(document).ready(function(){
 		request.done(function(response){
 			console.log("sup " + response.user.name)
 			clearPage();
-			debugger
 			loadBasicButtons();
 			$('body').append('<h3>'+response.user.name+'</h3>')
 			$('body').append('<ul class="user-favorites"></ul>')
