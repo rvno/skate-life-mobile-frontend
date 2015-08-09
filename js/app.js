@@ -129,23 +129,11 @@ $(document).ready(function(){
 							.attr('type', 'submit')
 							.val('Post')));
 
-			// $.getScript("/js/chat.js", function(){
-			//    alert("Script loaded but not necessarily executed.");
-			// });
 			$('head').append(
 				$('<script>')
 					.addClass('chat-script')
 					.attr('src', './js/chat.js'));
-
-			// $.getScript("./js/chat.js")
-			// 	.done(function() {
-			// 		alert('hey');
-			// 		 yay, all good, do something 
-			// 	})
-			// 	.fail(function() {
-			// 		alert('didnt make it');
-			// 		/* boo, fall back to something else */
-			// });
+			// $('.chat-script').attr('src', './js/chat.js');
 
 		})
 		
@@ -240,12 +228,16 @@ $(document).ready(function(){
 	// back button functionality -- consider refactoring or abstracting functionality 
 	$('body').on('click', '.back-button', function(event){
 		event.preventDefault();
+		clearChatScript();
+
 		reloadPage();
 	});
 
 	// logout button
 	$('body').on('click', '.logout-button', function(event){
 		event.preventDefault();
+		clearChatScript();
+
 		logout();
 	});
 
