@@ -66,7 +66,7 @@ $(document).ready(function(){
 						.text(park.name));
 
 				$('.skateparks').append($skateparkLink);
-				
+
 				savePage();
 			});
 
@@ -171,24 +171,33 @@ $(document).ready(function(){
 	$('body').on('click', '.skater-link', function(event){
 		event.preventDefault();
 		var path = event.target.href
-		var request = $.ajax({
+		
+		$.ajax({
 			url: path,
 			method: 'get', 
 			dataType: 'json'
 		})
-		request.done(function(response){
-			console.log("sup " + response.user.name)
+
+		.done(function(response){
 			clearPage();
 			loadBasicButtons();
-			$('body').append('<h3>'+response.user.name+'</h3>')
-			$('body').append('<ul class="user-favorites"></ul>')
-			$.each(response.skateparks, function(index, skatepark){
-				index = index + 1
-				$('.user-favorites').append('<li><a class="skatepark-link" href=' + baseURL + 'api/skateparks/' + index +'>' +skatepark.name+'</a></li>')
-				
-			})
+
+			$('body').append(
+				$('<h3>').text(response.user.name),
+				$('<ul>').addClass('user-favorites'));
+
+
+			$.each(response.skateparks, function(index, skatepark) {
+				$('.user-favorites').append(
+					$('<li>').append(
+						$('<a>')
+							.addClass('skatepark-link')
+							.attr('href', baseURL + 'api/skateparks/' + skatepark.id)
+							.text(skatepark.name)));
+			});
 		})
-		request.fail(function(response){
+		
+		.fail(function(response){
 			console.log('failure @ life')
 		})
 	})
