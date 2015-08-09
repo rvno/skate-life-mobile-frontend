@@ -73,6 +73,8 @@ $(document).ready(function(){
 
 
 
+// Fix this so that it grabs the parent and hides that
+
 
 	// show an individual skatepark may need to abstract
 	$('.skatepark-index').on('click', '.skatepark-link', function(event){
@@ -154,7 +156,7 @@ $(document).ready(function(){
 
 
 	// Users Index page
-	
+
 	$('.users-button').on('click', function(event) {
 		event.preventDefault();
 		var path = baseURL + 'api/users'
@@ -169,7 +171,7 @@ $(document).ready(function(){
 
 			// Change this to event parent
 			$('.skatepark-index').hide();
-			$('.users-show').show();
+			$('.users-index').show();
 
 
 			// append users to list
@@ -177,7 +179,7 @@ $(document).ready(function(){
 				$('.users').append(
 					$('<li>').append(
 						$('<a>')
-							.addClass('skater-link')
+							.addClass('user-link')
 							.attr('href', baseURL + 'api/users/' + user.id)
 							.text(user.name)));
 			});
@@ -193,7 +195,10 @@ $(document).ready(function(){
 
 
 	//show individual user and his favorites
-	$('body').on('click', '.skater-link', function(event){
+	// $('body').on('click', '.user-link', function(event){
+	// $('.user-link').on('click', function(event) {
+	$('.users').on('click', '.user-link', function(event) {
+
 		event.preventDefault();
 		var path = event.target.href
 		
@@ -204,18 +209,14 @@ $(document).ready(function(){
 		})
 
 		.done(function(response){
-			clearPage();
-			loadBasicButtons();
-			clearChatScript();
-			
 
-			$('body').append(
-				$('<h3>').text(response.user.name),
-				$('<ul>').addClass('user-favorites'));
+			$('.users-show h1').text(response.user.name);
+			$('.users-index').hide();
+			$('.users-show').show();
 
 
 			$.each(response.skateparks, function(index, skatepark) {
-				$('.user-favorites').append(
+				$('.user-favs').append(
 					$('<li>').append(
 						$('<a>')
 							.addClass('skatepark-link')
