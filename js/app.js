@@ -24,31 +24,56 @@ var logout = function(){
 $(document).ready(function(){
 	baseURL = 'https://skate-life-backend.herokuapp.com/'
 	var loginScreen = $('body').html();
+
 	sessionStorage.setItem('login-screen', location.pathname)
-	// login function => show skateparks
+	
+
+
+
+
+	// login and show skateparks
 	$('.login-button').on('click', function(){
-	console.log("hello");
-	console.log(baseURL)
-	var path = baseURL + 'api/skateparks'
-	var request = $.ajax({
-		url: path,
-		method: 'get', 
-		dataType: 'json'
-	})
-	request.done(function(response){
-		console.log("aye")
-		clearPage();
-		loadBasicButtons();
-		$('body').append('<ul class="skateparks"></ul>')
-		$('body').append('<button class="users-button">Show Users</button')
-		$.each(response, function(index, park){
-			index = index + 1
-		$('.skateparks').append('<li><a class="skatepark-link" href=' + baseURL + 'api/skateparks/' + index +'>' +index + ":" + park.name+'</a></li>');
-		savePage();
-		//skatepark id sub index
+		var path = baseURL + 'api/skateparks'
+
+
+		$.ajax({
+			url: path,
+			method: 'get',
+			dataType: 'json'
 		})
-	})
-	request.fail("nope")
+		
+
+		.done(function(response){
+			clearPage();
+			loadBasicButtons();
+
+			var $skateparkList = $('<ul>')
+				.addClass('skateparks');
+
+			var $userButton = $('<button>')
+				.text('Show Users')
+				.addClass('users-button');
+
+			$('body').append($skateparkList, $userButton);
+
+
+			// appends all skateparks
+			$.each(response, function(index, park) {
+				index = index + 1
+
+				var $skateparkLink = $('<li>').append(
+					$('<a>').addClass('skatepark-link')
+						.attr('href', baseURL + 'api/skateparks/' + park.id)
+						.text(park.name));
+
+				$('.skateparks').append($skateparkLink);
+
+				savePage();
+			});
+
+		})
+		
+		.fail("nope")
 	});
 
 	// show an individual skatepark may need to abstract
