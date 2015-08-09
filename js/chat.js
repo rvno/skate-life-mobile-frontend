@@ -22,6 +22,7 @@ $('body').on('submit', '.message-form', function(e){
 //add a callback that is triggered for each chat message
 messagesRef.on('child_added', function(snapshot){
 	var message = snapshot.val();
+	debugger
 
 	//make a new div to hold the message
 	$('.messages').append(
