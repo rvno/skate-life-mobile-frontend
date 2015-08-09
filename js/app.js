@@ -1,148 +1,219 @@
 var clearPage = function(){
-	$('body').html('')
+	$('body').html('');
 }
 
 var reloadPage =  function(){
 	clearPage();
-	$('body').append(sessionStorage.getItem('page-content'))
+	$('body').append(sessionStorage.getItem('page-content'));
 }
 
 var savePage = function(){
 	currentContent = $('body').html();
-	sessionStorage.setItem('page-content', currentContent)
+	sessionStorage.setItem('page-content', currentContent);
 }
 
 var loadBasicButtons = function(){
-	$('body').prepend('<button class="back-button">back</button>')
-	$('body').append('<button class="logout-button">logout</button>')
+	$('body').prepend('<button class="back-button">back</button>');
+	$('body').append('<button class="logout-button">logout</button>');
 }
 
 var logout = function(){
-	location.replace(sessionStorage.getItem('login-screen'))
+	location.replace(sessionStorage.getItem('login-screen'));
 }
 
+
+
+
+// event listeners
 $(document).ready(function(){
-	baseURL = 'https://skate-life-backend.herokuapp.com/'
+	baseURL = 'https://skate-life-backend.herokuapp.com/';
+	
 	var loginScreen = $('body').html();
-	sessionStorage.setItem('login-screen', location.pathname)
-	// login function => show skateparks
+	sessionStorage.setItem('login-screen', location.pathname);
+	
+
+	// login and show skateparks
 	$('.login-button').on('click', function(){
-	console.log("hello");
-	console.log(baseURL)
-	var path = baseURL + 'api/skateparks'
-	var request = $.ajax({
-		url: path,
-		method: 'get', 
-		dataType: 'json'
-	})
-	request.done(function(response){
-		console.log("aye")
-		clearPage();
-		loadBasicButtons();
-		$('body').append('<ul class="skateparks"></ul>')
-		$('body').append('<button class="users-button">Show Users</button')
-		$.each(response, function(index, park){
-			index = index + 1
-		$('.skateparks').append('<li><a class="skatepark-link" href=' + baseURL + 'api/skateparks/' + index +'>' +index + ":" + park.name+'</a></li>');
-		savePage();
-		//skatepark id sub index
+		var path = baseURL + 'api/skateparks';
+
+		$.ajax({
+			url: path,
+			method: 'get',
+			dataType: 'json'
 		})
-	})
-	request.fail("nope")
+		
+
+		.done(function(response){
+			clearPage();
+			loadBasicButtons();
+
+			var $skateparkList = $('<ul>')
+				.addClass('skateparks');
+
+			var $userButton = $('<button>')
+				.text('Show Users')
+				.addClass('users-button');
+
+			$('body').append($skateparkList, $userButton);
+
+
+			// appends all skateparks
+			$.each(response, function(index, park) {
+				$('.skateparks').append(
+					$('<li>').append(
+						$('<a>')
+							.addClass('skatepark-link')
+							.attr('href', baseURL + 'api/skateparks/' + park.id)
+							.text(park.name)));
+
+				savePage();
+			});
+
+		})
+
+		.fail(function(response) {
+			console.log(response);
+		});
 	});
 
+
+
+
 	// show an individual skatepark may need to abstract
-	$('body').on('click', '.skatepark-link', function(e){
-		e.preventDefault();
-		console.log(e.target.href)
-		var path = e.target.href
-		var request =  $.ajax({
+	$('body').on('click', '.skatepark-link', function(event){
+		event.preventDefault();
+		var path = event.target.href
+
+		$.ajax({
 			url: path,
 			method: 'get',
 			dataType: 'json'
 		})
-		request.done(function(response){
-			console.log("yup")
+		
+		.done(function(response){
 			clearPage();
 			loadBasicButtons();
-			$('body').append('<div class="skatepark-page"></div>')
-			if(response.address === null){
-				response.address = 'no address'
-			}
-			$('.skatepark-page').append('<p>'+response.name+'</p><p>'+response.address+'</p>')
-			// fav_count
-			$('.skatepark-page').append('<div class="messages"></div>')
-			$('.skatepark-page').append('<form class="message-form"><input type="text" id="nameInput" placeholder="Name" /><input type="text" id="messageInput" placeholder="Message..."/><input type="submit" value="Post"/></form>')
+
+			if(response.address === null){ response.address = 'no address' }
+			
+			$('body').append(
+				$('<div>').addClass('skatepark-page'));
+
+			$('.skatepark-page').append(
+				$('<p>').text(response.name),
+				$('<p>').text(response.address),
+				$('<div>').addClass('messages'),
+				$('<form>').addClass('message-form')
+					.append(
+						$('<input>')
+							.attr('type', 'text')
+							.attr('id', 'nameInput')
+							.attr('placeholder', 'Name'),
+						$('<input>')
+							.attr('type', 'text')
+							.attr('id', 'messageInput')
+							.attr('placeholder', 'Message'),
+						$('<input>')
+							.attr('type', 'submit')
+							.val('Post')));
+
 		})
-		request.fail(function(response){
-			console.log("nope")
+		
+		.fail(function(response){
+			console.log(response);
 		})
 	})
 
-	//show users
-	$('body').on('click', '.users-button', function(e){
-		e.preventDefault();
+
+
+
+	// Users Index page
+	$('body').on('click', '.users-button', function(event){
+		event.preventDefault();
 		var path = baseURL + 'api/users'
-		var request = $.ajax({
+
+		$.ajax({
 			url: path,
 			method: 'get',
 			dataType: 'json'
 		})
-		request.done(function(response){
-			console.log("show me da skaters")
+
+		.done(function(response){
 			clearPage();
 			loadBasicButtons();
-			$('body').append('<ul class="skaters"></ul>')
-			$.each(response, function(index, skater){
-				index = index + 1
-			$('.skaters').append('<li><a class="skater-link" href=' + baseURL + 'api/users/' + index +'>' +index + ":" + skater.name+'</a></li>');
 
-			})
+			$('body').append(
+				$('<ul>').addClass('skaters'));
+
+			// append users to list
+			$.each(response, function(index, user) {
+				$('.skaters').append(
+					$('<li>').append(
+						$('<a>')
+							.addClass('skater-link')
+							.attr('href', baseURL + 'api/users/' + user.id)
+							.text(user.name)));
+
+			});
 		})
-		request.fail(function(response){
+
+		.fail(function(response){
 			console.log("showin you da haters")
-		})
-	})
+		});
+
+	});
+
+
+
 
 	//show individual user and his favorites
-	$('body').on('click', '.skater-link', function(e){
-		e.preventDefault();
-		var path = e.target.href
-		var request = $.ajax({
+	$('body').on('click', '.skater-link', function(event){
+		event.preventDefault();
+		var path = event.target.href
+		
+		$.ajax({
 			url: path,
 			method: 'get', 
 			dataType: 'json'
 		})
-		request.done(function(response){
-			console.log("sup " + response.user.name)
+
+		.done(function(response){
 			clearPage();
 			loadBasicButtons();
-			$('body').append('<h3>'+response.user.name+'</h3>')
-			$('body').append('<ul class="user-favorites"></ul>')
-			$.each(response.skateparks, function(index, skatepark){
-				index = index + 1
-				$('.user-favorites').append('<li><a class="skatepark-link" href=' + baseURL + 'api/skateparks/' + index +'>' +skatepark.name+'</a></li>')
-				
-			})
+
+			$('body').append(
+				$('<h3>').text(response.user.name),
+				$('<ul>').addClass('user-favorites'));
+
+
+			$.each(response.skateparks, function(index, skatepark) {
+				$('.user-favorites').append(
+					$('<li>').append(
+						$('<a>')
+							.addClass('skatepark-link')
+							.attr('href', baseURL + 'api/skateparks/' + skatepark.id)
+							.text(skatepark.name)));
+			});
 		})
-		request.fail(function(response){
+		
+		.fail(function(response){
 			console.log('failure @ life')
 		})
 	})
 
+
+
 	// back button functionality -- consider refactoring or abstracting functionality 
-	$('body').on('click', '.back-button', function(e){
-		e.preventDefault();
-		// $('body').html('')
-		// $('body').append(sessionStorage.getItem('page-content'))
+	$('body').on('click', '.back-button', function(event){
+		event.preventDefault();
 		reloadPage();
-	})
+	});
 
 	// logout button
-	$('body').on('click', '.logout-button', function(e){
-		e.preventDefault();
+	$('body').on('click', '.logout-button', function(event){
+		event.preventDefault();
 		logout();
-	})
+	});
 
 
-})
+});
