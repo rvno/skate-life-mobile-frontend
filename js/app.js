@@ -25,6 +25,9 @@ var setCurrentPark = function(skatepark){
 	sessionStorage.setItem('skatepark', skatepark)
 }
 
+var clearChatScript = function(){
+	$('.chat-script').remove();
+}
 
 
 // event listeners
@@ -49,6 +52,7 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
 
 			var $skateparkList = $('<ul>')
 				.addClass('skateparks');
@@ -97,6 +101,7 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
 
 			if(response.address === null){ response.address = 'no address' }
 			
@@ -129,6 +134,7 @@ $(document).ready(function(){
 			// });
 			$('head').append(
 				$('<script>')
+					.addClass('chat-script')
 					.attr('src', './js/chat.js'));
 
 			// $.getScript("./js/chat.js")
@@ -165,6 +171,8 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
+
 
 			$('body').append(
 				$('<ul>').addClass('skaters'));
@@ -204,6 +212,8 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
+			
 
 			$('body').append(
 				$('<h3>').text(response.user.name),
