@@ -1,5 +1,8 @@
 // get a reference to the root of the chat data.
-var messagesRef = new Firebase('https://skate-life.firebaseio.com/')
+var currentPark = $('.skatepark-name').text();
+var messagesRef = new Firebase('https://skate-life.firebaseio.com/' + currentPark);
+
+
 
 
 // when the user submits a message, post the message
@@ -9,6 +12,7 @@ $('body').on('submit', '.message-form', function(e){
 	var name = $('#nameInput').val();
 	var text = $('#messageInput').val();
 
+	debugger
 	messagesRef.push({name: name, text: text});
 	$('#messageInput').val('');
 });
