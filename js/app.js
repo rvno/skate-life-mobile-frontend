@@ -1,31 +1,31 @@
 var clearPage = function(){
-	$('body').html('')
+	$('body').html('');
 }
 
 var reloadPage =  function(){
 	clearPage();
-	$('body').append(sessionStorage.getItem('page-content'))
+	$('body').append(sessionStorage.getItem('page-content'));
 }
 
 var savePage = function(){
 	currentContent = $('body').html();
-	sessionStorage.setItem('page-content', currentContent)
+	sessionStorage.setItem('page-content', currentContent);
 }
 
 var loadBasicButtons = function(){
-	$('body').prepend('<button class="back-button">back</button>')
-	$('body').append('<button class="logout-button">logout</button>')
+	$('body').prepend('<button class="back-button">back</button>');
+	$('body').append('<button class="logout-button">logout</button>');
 }
 
 var logout = function(){
-	location.replace(sessionStorage.getItem('login-screen'))
+	location.replace(sessionStorage.getItem('login-screen'));
 }
 
 $(document).ready(function(){
-	baseURL = 'https://skate-life-backend.herokuapp.com/'
+	baseURL = 'https://skate-life-backend.herokuapp.com/';
 	var loginScreen = $('body').html();
 
-	sessionStorage.setItem('login-screen', location.pathname)
+	sessionStorage.setItem('login-screen', location.pathname);
 	
 
 
@@ -33,8 +33,7 @@ $(document).ready(function(){
 
 	// login and show skateparks
 	$('.login-button').on('click', function(){
-		var path = baseURL + 'api/skateparks'
-
+		var path = baseURL + 'api/skateparks';
 
 		$.ajax({
 			url: path,
@@ -72,41 +71,66 @@ $(document).ready(function(){
 			});
 
 		})
-		
-		.fail("nope")
+
+		.fail(function(response) {
+			console.log(response);
+		});
 	});
 
+
+
+
 	// show an individual skatepark may need to abstract
-	$('body').on('click', '.skatepark-link', function(e){
-		e.preventDefault();
-		console.log(e.target.href)
-		var path = e.target.href
-		var request =  $.ajax({
+	$('body').on('click', '.skatepark-link', function(event){
+		event.preventDefault();
+		var path = event.target.href
+
+		$.ajax({
 			url: path,
 			method: 'get',
 			dataType: 'json'
 		})
-		request.done(function(response){
-			console.log("yup")
+		
+		.done(function(response){
 			clearPage();
 			loadBasicButtons();
-			$('body').append('<div class="skatepark-page"></div>')
-			if(response.address === null){
-				response.address = 'no address'
-			}
-			$('.skatepark-page').append('<p>'+response.name+'</p><p>'+response.address+'</p>')
-			// fav_count
-			$('.skatepark-page').append('<div class="messages"></div>')
-			$('.skatepark-page').append('<form class="message-form"><input type="text" id="nameInput" placeholder="Name" /><input type="text" id="messageInput" placeholder="Message..."/><input type="submit" value="Post"/></form>')
+
+			if(response.address === null){ response.address = 'no address' }
+			
+			$('body').append(
+				$('<div>').addClass('skatepark-page'));
+
+			$('.skatepark-page').append(
+				$('<p>').text(response.name),
+				$('<p>').text(response.address),
+				$('<div>').addClass('messages'),
+				$('<form>').addClass('message-form')
+					.append(
+						$('<input>')
+							.attr('type', 'text')
+							.attr('id', 'nameInput')
+							.attr('placeholder', 'Name'),
+						$('<input>')
+							.attr('type', 'text')
+							.attr('id', 'messageInput')
+							.attr('placeholder', 'Message'),
+						$('<input>')
+							.attr('type', 'submit')
+							.val('Post')
+						));
+
 		})
-		request.fail(function(response){
-			console.log("nope")
+		
+		.fail(function(response){
+			console.log(response);
 		})
 	})
 
+
+
 	//show users
-	$('body').on('click', '.users-button', function(e){
-		e.preventDefault();
+	$('body').on('click', '.users-button', function(event){
+		event.preventDefault();
 		var path = baseURL + 'api/users'
 		var request = $.ajax({
 			url: path,
@@ -130,9 +154,9 @@ $(document).ready(function(){
 	})
 
 	//show individual user and his favorites
-	$('body').on('click', '.skater-link', function(e){
-		e.preventDefault();
-		var path = e.target.href
+	$('body').on('click', '.skater-link', function(event){
+		event.preventDefault();
+		var path = event.target.href
 		var request = $.ajax({
 			url: path,
 			method: 'get', 
@@ -156,16 +180,16 @@ $(document).ready(function(){
 	})
 
 	// back button functionality -- consider refactoring or abstracting functionality 
-	$('body').on('click', '.back-button', function(e){
-		e.preventDefault();
+	$('body').on('click', '.back-button', function(event){
+		event.preventDefault();
 		// $('body').html('')
 		// $('body').append(sessionStorage.getItem('page-content'))
 		reloadPage();
 	})
 
 	// logout button
-	$('body').on('click', '.logout-button', function(e){
-		e.preventDefault();
+	$('body').on('click', '.logout-button', function(event){
+		event.preventDefault();
 		logout();
 	})
 
