@@ -59,14 +59,12 @@ $(document).ready(function(){
 
 			// appends all skateparks
 			$.each(response, function(index, park) {
-				index = index + 1
-
-				var $skateparkLink = $('<li>').append(
-					$('<a>').addClass('skatepark-link')
-						.attr('href', baseURL + 'api/skateparks/' + park.id)
-						.text(park.name));
-
-				$('.skateparks').append($skateparkLink);
+				$('.skateparks').append(
+					$('<li>').append(
+						$('<a>')
+							.addClass('skatepark-link')
+							.attr('href', baseURL + 'api/skateparks/' + park.id)
+							.text(park.name)));
 
 				savePage();
 			});
