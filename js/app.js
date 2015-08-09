@@ -66,7 +66,7 @@ $(document).ready(function(){
 						.text(park.name));
 
 				$('.skateparks').append($skateparkLink);
-
+				
 				savePage();
 			});
 
@@ -116,8 +116,7 @@ $(document).ready(function(){
 							.attr('placeholder', 'Message'),
 						$('<input>')
 							.attr('type', 'submit')
-							.val('Post')
-						));
+							.val('Post')));
 
 		})
 		
@@ -128,30 +127,45 @@ $(document).ready(function(){
 
 
 
-	//show users
+
+	// Users Index page
 	$('body').on('click', '.users-button', function(event){
 		event.preventDefault();
 		var path = baseURL + 'api/users'
-		var request = $.ajax({
+
+		$.ajax({
 			url: path,
 			method: 'get',
 			dataType: 'json'
 		})
-		request.done(function(response){
-			console.log("show me da skaters")
+
+		.done(function(response){
 			clearPage();
 			loadBasicButtons();
-			$('body').append('<ul class="skaters"></ul>')
-			$.each(response, function(index, skater){
-				index = index + 1
-			$('.skaters').append('<li><a class="skater-link" href=' + baseURL + 'api/users/' + index +'>' +index + ":" + skater.name+'</a></li>');
 
-			})
+			$('body').append(
+				$('<ul>').addClass('skaters'));
+
+			// append users to list
+			$.each(response, function(index, user) {
+				$('.skaters').append(
+					$('<li>').append(
+						$('<a>')
+							.addClass('skater-link')
+							.attr('href', baseURL + 'api/users/' + user.id)
+							.text(user.name)));
+
+			});
 		})
-		request.fail(function(response){
+
+		.fail(function(response){
 			console.log("showin you da haters")
-		})
-	})
+		});
+
+	});
+
+
+
 
 	//show individual user and his favorites
 	$('body').on('click', '.skater-link', function(event){
