@@ -21,15 +21,16 @@ var logout = function(){
 	location.replace(sessionStorage.getItem('login-screen'));
 }
 
+
+
+
+// event listeners
 $(document).ready(function(){
 	baseURL = 'https://skate-life-backend.herokuapp.com/';
+	
 	var loginScreen = $('body').html();
-
 	sessionStorage.setItem('login-screen', location.pathname);
 	
-
-
-
 
 	// login and show skateparks
 	$('.login-button').on('click', function(){
@@ -202,19 +203,19 @@ $(document).ready(function(){
 		})
 	})
 
+
+
 	// back button functionality -- consider refactoring or abstracting functionality 
 	$('body').on('click', '.back-button', function(event){
 		event.preventDefault();
-		// $('body').html('')
-		// $('body').append(sessionStorage.getItem('page-content'))
 		reloadPage();
-	})
+	});
 
 	// logout button
 	$('body').on('click', '.logout-button', function(event){
 		event.preventDefault();
 		logout();
-	})
+	});
 
 
-})
+});
