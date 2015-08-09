@@ -127,7 +127,7 @@ $(document).ready(function(){
 			// $.getScript("/js/chat.js", function(){
 			//    alert("Script loaded but not necessarily executed.");
 			// });
-			$('body').append(
+			$('head').append(
 				$('<script>')
 					.attr('src', './js/chat.js'));
 

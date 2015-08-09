@@ -12,8 +12,9 @@ $('body').on('submit', '.message-form', function(e){
 	var name = $('#nameInput').val();
 	var text = $('#messageInput').val();
 
-	debugger
-	messagesRef.push({name: name, text: text});
+	if (text !== "")
+		messagesRef.push({name: name, text: text});
+
 	$('#messageInput').val('');
 });
 
