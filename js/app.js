@@ -34,8 +34,8 @@ var clearChatScript = function(){
 $(document).ready(function(){
 	baseURL = 'https://skate-life-backend.herokuapp.com/';
 	
-	var loginScreen = $('body').html();
-	sessionStorage.setItem('login-screen', location.pathname);
+	// var loginScreen = $('body').html();
+	// sessionStorage.setItem('login-screen', location.pathname);
 	
 
 	// login and show skateparks
@@ -50,18 +50,8 @@ $(document).ready(function(){
 		
 
 		.done(function(response){
-			clearPage();
-			loadBasicButtons();
-			clearChatScript();
-
-			var $skateparkList = $('<ul>')
-				.addClass('skateparks');
-
-			var $userButton = $('<button>')
-				.text('Show Users')
-				.addClass('users-button');
-
-			$('body').append($skateparkList, $userButton);
+			$('.login-screen').hide();
+			$('.skatepark-index').show();
 
 
 			// appends all skateparks
@@ -71,10 +61,7 @@ $(document).ready(function(){
 						$('<a>')
 							.addClass('skatepark-link')
 							.attr('href', baseURL + 'api/skateparks/' + park.id)
-							// .attr('id', park.name)
 							.text(park.name)));
-
-				savePage();
 			});
 
 		})
@@ -88,7 +75,7 @@ $(document).ready(function(){
 
 
 	// show an individual skatepark may need to abstract
-	$('body').on('click', '.skatepark-link', function(event){
+	$('.skatepark-index').on('click', '.skatepark-link', function(event){
 		event.preventDefault();
 		var path = event.target.href
 		var skateparkName = event.target.text
@@ -101,58 +88,16 @@ $(document).ready(function(){
 		})
 		
 		.done(function(response){
-			clearPage();
-			loadBasicButtons();
-			clearChatScript();
-
-			if(response.address === null){ response.address = 'no address' }
+			// Firebase chat for individual skatepark
+			messagesRef = new Firebase('https://skate-life.firebaseio.com/' + skateparkName);
 			
-			// store cookie with current skatepark
-			setCurrentPark(response.name);
-
-			$('body').append(
-				$('<div>').addClass('skatepark-page'));
-
-			$('.skatepark-page').append(
-				$('<h1>').addClass('skatepark-name').text(response.name),
-				$('<p>').text(response.address),
-				$('<div>').addClass('messages'),
-				$('<form>').addClass('message-form')
-					.append(
-						$('<input>')
-							.attr('type', 'text')
-							.attr('id', 'nameInput')
-							.attr('placeholder', 'Name'),
-						$('<input>')
-							.attr('type', 'text')
-							.attr('id', 'messageInput')
-							.attr('placeholder', 'Message'),
-						$('<input>')
-							.addClass('message-submit')
-							.attr('type', 'submit')
-							.val('Post')));
+			// we dont want it if it doesn't have an address
+			if(response.address === null){ response.address = 'no address' }
+			$('.skatepark-name').text(skateparkName);
+			$('.skatepark-index').hide();
+			$('.skatepark-show').show();
 
 
-
-			// Firebase chat for each skatepark
-			var messagesRef = new Firebase('https://skate-life.firebaseio.com/' + skateparkName);
-
-
-
-			// when the user submits a message, post the message
-			$('.message-submit').on('submit', function(event) {
-			// $('body').on('click', '.message-submit', function(event){
-				console.log(event);
-				event.preventDefault();
-
-				var name = $('#nameInput').val();
-				var text = $('#messageInput').val();
-
-				// if (text !== "")
-					messagesRef.push({name: name, text: text});
-
-				$('#messageInput').val('');
-			});
 
 
 			//add a callback that is triggered for each chat message
@@ -166,14 +111,45 @@ $(document).ready(function(){
 							$('<p>').text(message.name + ': ' + message.text)));
 
 				// $('.messages')[0].scrollTop = $('.messages')[0].scrollHeight;
-			})
+			});
 
+
+
+
+			
 		})
+
 		
 		.fail(function(response){
 			console.log(response);
 		})
-	})
+	});
+
+
+
+
+
+	// when the user submits a message, post the message
+	$('.message-form').on('submit', function(event) {
+	// $('body').on('click', '.message-submit', function(event){
+		console.log(event);
+		event.preventDefault();
+
+		var name = $('#nameInput').val();
+		var text = $('#messageInput').val();
+
+		// if (text !== "")
+			messagesRef.push({name: name, text: text});
+
+		$('#messageInput').val('');
+	});
+
+
+
+
+
+
+
 
 
 
