@@ -89,6 +89,8 @@ $(document).ready(function(){
 		
 		.done(function(response){
 			// Firebase chat for individual skatepark
+			// Had to use Global variable
+
 			messagesRef = new Firebase('https://skate-life.firebaseio.com/' + skateparkName);
 			
 			// we dont want it if it doesn't have an address
@@ -116,7 +118,7 @@ $(document).ready(function(){
 
 
 
-			
+
 		})
 
 		
@@ -131,15 +133,12 @@ $(document).ready(function(){
 
 	// when the user submits a message, post the message
 	$('.message-form').on('submit', function(event) {
-	// $('body').on('click', '.message-submit', function(event){
-		console.log(event);
 		event.preventDefault();
 
 		var name = $('#nameInput').val();
 		var text = $('#messageInput').val();
 
-		// if (text !== "")
-			messagesRef.push({name: name, text: text});
+		messagesRef.push({name: name, text: text});
 
 		$('#messageInput').val('');
 	});
@@ -155,7 +154,8 @@ $(document).ready(function(){
 
 
 	// Users Index page
-	$('body').on('click', '.users-button', function(event){
+	
+	$('.users-button').on('click', function(event) {
 		event.preventDefault();
 		var path = baseURL + 'api/users'
 
@@ -166,23 +166,20 @@ $(document).ready(function(){
 		})
 
 		.done(function(response){
-			clearPage();
-			loadBasicButtons();
-			clearChatScript();
 
+			// Change this to event parent
+			$('.skatepark-index').hide();
+			$('.users-show').show();
 
-			$('body').append(
-				$('<ul>').addClass('skaters'));
 
 			// append users to list
 			$.each(response, function(index, user) {
-				$('.skaters').append(
+				$('.users').append(
 					$('<li>').append(
 						$('<a>')
 							.addClass('skater-link')
 							.attr('href', baseURL + 'api/users/' + user.id)
 							.text(user.name)));
-
 			});
 		})
 
@@ -202,7 +199,7 @@ $(document).ready(function(){
 		
 		$.ajax({
 			url: path,
-			method: 'get', 
+			method: 'get',
 			dataType: 'json'
 		})
 
