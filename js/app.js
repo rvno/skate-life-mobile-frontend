@@ -71,6 +71,8 @@ $(document).ready(function(){
 			}
 			$('.skatepark-page').append('<p>'+response.name+'</p><p>'+response.address+'</p>')
 			// fav_count
+			$('.skatepark-page').append('<div class="messages"></div>')
+			$('.skatepark-page').append('<form class="message-form"><input type="text" id="nameInput" placeholder="Name" /><input type="text" id="messageInput" placeholder="Message..."/><input type="submit" value="Post"/></form>')
 		})
 		request.fail(function(response){
 			console.log("nope")
