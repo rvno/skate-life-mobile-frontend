@@ -21,7 +21,13 @@ var logout = function(){
 	location.replace(sessionStorage.getItem('login-screen'));
 }
 
+var setCurrentPark = function(skatepark){
+	sessionStorage.setItem('skatepark', skatepark)
+}
 
+var clearChatScript = function(){
+	$('.chat-script').remove();
+}
 
 
 // event listeners
@@ -46,6 +52,7 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
 
 			var $skateparkList = $('<ul>')
 				.addClass('skateparks');
@@ -64,6 +71,7 @@ $(document).ready(function(){
 						$('<a>')
 							.addClass('skatepark-link')
 							.attr('href', baseURL + 'api/skateparks/' + park.id)
+							// .attr('id', park.name)
 							.text(park.name)));
 
 				savePage();
@@ -93,14 +101,18 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
 
 			if(response.address === null){ response.address = 'no address' }
 			
+			// store cookie with current skatepark
+			setCurrentPark(response.name);
+
 			$('body').append(
 				$('<div>').addClass('skatepark-page'));
 
 			$('.skatepark-page').append(
-				$('<p>').text(response.name),
+				$('<h1>').addClass('skatepark-name').text(response.name),
 				$('<p>').text(response.address),
 				$('<div>').addClass('messages'),
 				$('<form>').addClass('message-form')
@@ -116,6 +128,24 @@ $(document).ready(function(){
 						$('<input>')
 							.attr('type', 'submit')
 							.val('Post')));
+
+			// $.getScript("/js/chat.js", function(){
+			//    alert("Script loaded but not necessarily executed.");
+			// });
+			$('head').append(
+				$('<script>')
+					.addClass('chat-script')
+					.attr('src', './js/chat.js'));
+
+			// $.getScript("./js/chat.js")
+			// 	.done(function() {
+			// 		alert('hey');
+			// 		 yay, all good, do something 
+			// 	})
+			// 	.fail(function() {
+			// 		alert('didnt make it');
+			// 		/* boo, fall back to something else */
+			// });
 
 		})
 		
@@ -141,6 +171,8 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
+
 
 			$('body').append(
 				$('<ul>').addClass('skaters'));
@@ -180,6 +212,8 @@ $(document).ready(function(){
 		.done(function(response){
 			clearPage();
 			loadBasicButtons();
+			clearChatScript();
+			
 
 			$('body').append(
 				$('<h3>').text(response.user.name),
