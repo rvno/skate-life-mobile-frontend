@@ -91,6 +91,8 @@ $(document).ready(function(){
 	$('body').on('click', '.skatepark-link', function(event){
 		event.preventDefault();
 		var path = event.target.href
+		var skateparkName = event.target.text
+		debugger
 
 		$.ajax({
 			url: path,
@@ -126,14 +128,45 @@ $(document).ready(function(){
 							.attr('id', 'messageInput')
 							.attr('placeholder', 'Message'),
 						$('<input>')
+							.addClass('message-submit')
 							.attr('type', 'submit')
 							.val('Post')));
 
-			$('head').append(
-				$('<script>')
-					.addClass('chat-script')
-					.attr('src', './js/chat.js'));
-			// $('.chat-script').attr('src', './js/chat.js');
+
+
+			// Firebase chat for each skatepark
+			var messagesRef = new Firebase('https://skate-life.firebaseio.com/' + skateparkName);
+
+
+
+			// when the user submits a message, post the message
+			$('.message-submit').on('submit', function(event) {
+			// $('body').on('click', '.message-submit', function(event){
+				console.log(event);
+				event.preventDefault();
+
+				var name = $('#nameInput').val();
+				var text = $('#messageInput').val();
+
+				// if (text !== "")
+					messagesRef.push({name: name, text: text});
+
+				$('#messageInput').val('');
+			});
+
+
+			//add a callback that is triggered for each chat message
+			messagesRef.on('child_added', function(snapshot){
+				var message = snapshot.val();
+				debugger
+
+				//make a new div to hold the message
+				$('.messages').append(
+					$('<div>').addClass('message').append(
+							$('<p>').text(message.name + ': ' + message.text)));
+
+				// $('.messages')[0].scrollTop = $('.messages')[0].scrollHeight;
+			})
 
 		})
 		
