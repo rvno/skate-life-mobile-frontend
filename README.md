@@ -1,2 +1,1 @@
-# skate-life-mobile-frontend
-mobile frontend prototype for skate-life
+OUTDATED, will delete this repo later.
