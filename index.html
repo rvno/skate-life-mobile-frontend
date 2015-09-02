@@ -9,12 +9,52 @@
 	<script class="chat-script" src=""></script>
 </head>
 <body>
-	<div class="content-container">
+	
+	<div hidden class="basic-buttons">
+		<button class="back">back</button>
+		<button class="logout">logout</button>
+	</div>
+
+
+	<div class="login-screen">
 		<h1>hello harvey</h1>
 		<button class="login-button">Log in</button>
 	</div>
-</body>
+
+
+	<div hidden class="skatepark-index">
+		<h1>Skateparks</h1>
+		<ul class="skateparks"></ul>
+		<button class="users-button">Show Users</button>
+	</div>
+
+
+	<div hidden class="skatepark-show">
+		<h1 class="skatepark-name"></h1>
+		<p></p>
+		<h3>Message Board</h3>
+		<div class="messages"></div>
+		<form class="message-form">
+			<input type="text" id="nameInput" placeholder="Name">
+			<input type="text" id="messageInput" placeholder="Message">
+			<input type="submit" val="Post">
+		</form>
+	</div>
+
+
+	<div hidden class="users-index">
+		<ul class="users"></ul>
+	</div>
+
+
+	<div hidden class="users-show">
+		<h1></h1>
+		<ul class="user-favs"></ul>
+	</div>
+
+
 	<script src="./js/app.js"></script>
+</body>
 
 </html>
 
